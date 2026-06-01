@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard | XceptionalLEARNING</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --xcept-dark-blue: #3e5c76;
+            --xcept-green:     #8eb444;
+            --xcept-orange:    #f08b4c;
+            --xcept-light-blue:#00afee;
+            --bg-soft:         #f8fafc;
+            --text-dark:       #1e293b;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+        body {
+            font-family:'Roboto',sans-serif;
+            background:var(--bg-soft);
+            color:var(--text-dark);
+            min-height:100vh;
+        }
+
+        /* ── Top nav ─────────────────────────────────────── */
+        .top-nav {
+            background:var(--xcept-dark-blue);
+            display:flex; align-items:center;
+            justify-content:space-between;
+            padding:0 2rem;
+            position:sticky; top:0; z-index:1000;
+            box-shadow:0 2px 12px rgba(0,0,0,0.18);
+        }
+        .nav-brand {
+            font-family:'Montserrat',sans-serif;
+            font-weight:700; color:white; font-size:0.95rem;
+            padding:1rem 0; letter-spacing:0.3px;
+        }
+        .nav-links { display:flex; gap:0.25rem; }
+        .nav-links button, .nav-links a {
+            background:none; border:none;
+            color:rgba(255,255,255,0.8);
+            padding:1rem 1.1rem; cursor:pointer;
+            font-family:'Montserrat',sans-serif;
+            font-weight:600; font-size:0.8rem;
+            text-transform:uppercase; transition:0.2s;
+            border-radius:4px; text-decoration:none;
+            display:flex; align-items:center;
+        }
+        .nav-links button:hover,.nav-links a:hover,.nav-links .active { background:var(--xcept-orange); color:white; }
+        .nav-right { display:flex; align-items:center; gap:0.7rem; }
+        .user-avatar {
+            width:32px; height:32px; border-radius:50%;
+            background:var(--xcept-orange);
+            display:flex; align-items:center; justify-content:center;
+            font-family:'Montserrat',sans-serif;
+            font-weight:700; font-size:0.85rem; color:white;
+        }
+        .user-name-txt { color:rgba(255,255,255,0.9); font-size:0.85rem; }
+        .btn-logout {
+            background:rgba(255,255,255,0.12);
+            border:1px solid rgba(255,255,255,0.22);
+            color:white; padding:0.38rem 0.9rem;
+            border-radius:8px; cursor:pointer;
+            font-size:0.78rem; font-family:'Montserrat',sans-serif;
+            font-weight:600; transition:0.2s;
+        }
+        .btn-logout:hover { background:rgba(255,255,255,0.22); }
+
+        /* ── Hero banner ─────────────────────────────────── */
+        .dash-hero {
+            background:linear-gradient(135deg, var(--xcept-dark-blue) 0%, #2a4a63 100%);
+            color:white; padding:3rem 2rem; text-align:center;
+        }
+        .dash-hero h1 {
+            font-family:'Montserrat',sans-serif;
+            font-size:2rem; font-weight:800; margin-bottom:0.4rem;
+        }
+        .dash-hero p { color:rgba(255,255,255,0.7); font-size:1rem; }
+
+        /* ── Layout ──────────────────────────────────────── */
+        .dash-container { max-width:1100px; margin:0 auto; padding:2.5rem 2rem; }
+
+        /* ── Section header ──────────────────────────────── */
+        .sec-header {
+            font-family:'Montserrat',sans-serif;
+            font-size:1.1rem; font-weight:700;
+            color:var(--xcept-dark-blue);
+            margin-bottom:1.2rem;
+            display:flex; align-items:center; gap:0.5rem;
+        }
+        .sec-header::after { content:''; flex:1; height:1px; background:#e2e8f0; margin-left:0.5rem; }
+
+        /* ── Stat cards row ──────────────────────────────── */
+        .stats-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+            gap:1.4rem;
+            margin-bottom:2.5rem;
+        }
+        .stat-card {
+            background:white; border-radius:18px;
+            padding:1.6rem 1.4rem;
+            box-shadow:0 8px 24px rgba(62,92,118,0.09);
+            display:flex; align-items:center; gap:1.1rem;
+            transition:transform 0.2s;
+            animation:popIn 0.5s ease both;
+        }
+        .stat-card:hover { transform:translateY(-3px); }
+        .stat-card:nth-child(1){animation-delay:0.05s}
+        .stat-card:nth-child(2){animation-delay:0.10s}
+        .stat-card:nth-child(3){animation-delay:0.15s}
+        .stat-card:nth-child(4){animation-delay:0.20s}
+
+        @keyframes popIn{
+            from{opacity:0;transform:scale(0.95) translateY(10px)}
+            to  {opacity:1;transform:scale(1)   translateY(0)}
+        }
+
+        .stat-icon {
+            width:50px; height:50px; border-radius:14px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.4rem; flex-shrink:0;
+        }
+        .si-blue   { background:#e0f4ff; }
+        .si-green  { background:#f0f7e6; }
+        .si-orange { background:#fff3eb; }
+        .si-purple { background:#f3f0ff; }
+
+        .stat-value {
+            font-family:'Montserrat',sans-serif;
+            font-size:2rem; font-weight:800;
+            color:var(--xcept-dark-blue); line-height:1;
+        }
+        .stat-label { font-size:0.8rem; color:#64748b; margin-top:4px; font-weight:500; }
+
+        /* ── Bottom 2-col grid ───────────────────────────── */
+        .bottom-grid {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:1.5rem;
+        }
+        @media(max-width:720px){ .bottom-grid{grid-template-columns:1fr} }
+
+        .panel {
+            background:white; border-radius:18px;
+            padding:1.8rem;
+            box-shadow:0 8px 24px rgba(62,92,118,0.09);
+        }
+
+        /* ── Quiz history table ──────────────────────────── */
+        .h-table { width:100%; border-collapse:collapse; font-size:0.87rem; }
+        .h-table th {
+            text-align:left; padding:0.55rem 0.8rem;
+            color:#64748b; font-weight:600; font-size:0.76rem;
+            text-transform:uppercase; letter-spacing:0.4px;
+            border-bottom:1px solid #f1f5f9;
+        }
+        .h-table td { padding:0.75rem 0.8rem; border-bottom:1px solid #f8fafc; }
+        .h-table tr:last-child td { border-bottom:none; }
+
+        .badge {
+            display:inline-block; padding:3px 10px;
+            border-radius:20px; font-weight:700; font-size:0.8rem;
+        }
+        .badge-pass { background:#f0fdf4; color:#16a34a; }
+        .badge-mid  { background:#fff7ed; color:#c2410c; }
+        .badge-fail { background:#fef2f2; color:#dc2626; }
+
+        /* ── Progress section ────────────────────────────── */
+        .progress-list { display:flex; flex-direction:column; gap:0.85rem; }
+
+        .prog-row { display:flex; align-items:center; gap:0.8rem; }
+        .prog-label { width:58px; font-size:0.73rem; font-weight:700; color:var(--xcept-dark-blue); text-transform:uppercase; flex-shrink:0; }
+        .prog-track { flex:1; background:#f1f5f9; border-radius:6px; height:10px; overflow:hidden; }
+        .prog-fill {
+            height:100%; border-radius:6px;
+            background:linear-gradient(90deg, var(--xcept-light-blue), var(--xcept-green));
+            transition:width 1.1s cubic-bezier(0.4,0,0.2,1);
+        }
+        .prog-check {
+            width:22px; height:22px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:0.72rem; font-weight:bold; flex-shrink:0;
+        }
+        .check-done   { background:var(--xcept-green); color:white; }
+        .check-undone { background:#e2e8f0; color:#94a3b8; }
+
+        /* ── Circular score ring ─────────────────────────── */
+        .ring-wrap { display:flex; justify-content:center; margin-bottom:1.4rem; }
+        .ring-container { position:relative; width:120px; height:120px; }
+        .ring-svg { transform:rotate(-90deg); }
+        .ring-inner {
+            position:absolute; inset:0;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+        }
+        .ring-pct { font-family:'Montserrat',sans-serif; font-size:1.7rem; font-weight:800; color:var(--xcept-dark-blue); line-height:1; }
+        .ring-sub { font-size:0.68rem; color:#64748b; text-transform:uppercase; letter-spacing:0.4px; margin-top:2px; }
+
+        /* ── Empty state ─────────────────────────────────── */
+        .empty { text-align:center; padding:2rem 1rem; color:#94a3b8; font-size:0.88rem; }
+        .empty-icon { font-size:2.4rem; margin-bottom:0.5rem; }
+
+        /* ── CTA button ──────────────────────────────────── */
+        .btn-cta {
+            background:var(--xcept-orange); color:white;
+            border:none; border-radius:10px;
+            padding:0.7rem 1.6rem;
+            font-family:'Montserrat',sans-serif;
+            font-weight:700; cursor:pointer;
+            font-size:0.88rem; transition:0.2s;
+            display:block; margin:1.4rem auto 0;
+        }
+        .btn-cta:hover { background:#e07840; }
+
+        /* ── Auth overlay ────────────────────────────────── */
+        #auth-overlay {
+            position:fixed; inset:0; background:white;
+            display:flex; align-items:center; justify-content:center;
+            z-index:9000; transition:opacity 0.4s;
+        }
+        #auth-overlay.hidden { opacity:0; pointer-events:none; }
+        .loader{display:flex;gap:8px;}
+        .loader span{width:12px;height:12px;border-radius:50%;animation:bounce 1.1s ease-in-out infinite;}
+        .loader span:nth-child(1){background:var(--xcept-light-blue);animation-delay:0s}
+        .loader span:nth-child(2){background:var(--xcept-green);animation-delay:.2s}
+        .loader span:nth-child(3){background:var(--xcept-orange);animation-delay:.4s}
+        @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+    </style>
+</head>
+<body>
+
+<!-- Auth overlay -->
+<div id="auth-overlay">
+    <div class="loader"><span></span><span></span><span></span></div>
+</div>
+
+<!-- ── Nav ──────────────────────────────────────────────────── -->
+<nav class="top-nav">
+    <div class="nav-brand">📚 XceptionalLEARNING</div>
+    <div class="nav-links">
+        <a href="index.html">Learning Hub</a>
+        <button class="active">Dashboard</button>
+    </div>
+    <div class="nav-right">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span class="user-name-txt" id="user-name">…</span>
+        <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="dash-hero">
+    <h1>📊 My Learning Dashboard</h1>
+    <p id="hero-sub">Loading your progress…</p>
+</div>
+
+<!-- ── Main content ─────────────────────────────────────────── -->
+<div class="dash-container">
+
+    <!-- Stat cards -->
+    <div class="sec-header">📈 Performance Overview</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon si-blue">🎯</div>
+            <div>
+                <div class="stat-value" id="st-total">—</div>
+                <div class="stat-label">Total Quizzes Taken</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon si-green">📊</div>
+            <div>
+                <div class="stat-value" id="st-avg">—</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon si-orange">🏆</div>
+            <div>
+                <div class="stat-value" id="st-high">—</div>
+                <div class="stat-label">Highest Score</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon si-purple">📅</div>
+            <div>
+                <div class="stat-value" id="st-days">—</div>
+                <div class="stat-label">Days Completed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom grid -->
+    <div class="bottom-grid">
+
+        <!-- Quiz History -->
+        <div class="panel">
+            <div class="sec-header">📝 Quiz History</div>
+            <div id="history-area">
+                <div class="empty">
+                    <div class="empty-icon">📋</div>
+                    No quizzes yet.<br>
+                    <a href="index.html" style="color:var(--xcept-light-blue)">Take the quiz →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Progress -->
+        <div class="panel">
+            <div class="sec-header">🌱 Learning Progress</div>
+
+            <!-- Ring chart -->
+            <div class="ring-wrap">
+                <div class="ring-container">
+                    <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="#f1f5f9" stroke-width="11"/>
+                        <circle id="ring-circle" cx="60" cy="60" r="50" fill="none"
+                            stroke="url(#rg)" stroke-width="11"
+                            stroke-dasharray="314.16" stroke-dashoffset="314.16"
+                            stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%"   stop-color="#00afee"/>
+                                <stop offset="100%" stop-color="#8eb444"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="ring-inner">
+                        <div class="ring-pct" id="ring-pct">0%</div>
+                        <div class="ring-sub">Complete</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Per-day progress bars -->
+            <div class="progress-list" id="progress-list"></div>
+
+            <button class="btn-cta" onclick="location.href='index.html'">Continue Learning →</button>
+        </div>
+
+    </div>
+</div>
+
+<footer style="text-align:center;padding:3rem 1rem;background:var(--xcept-dark-blue);color:#cbd5e1;font-size:0.85rem;margin-top:3rem;">
+    <p>© 2026 XceptionalLEARNING. All rights reserved.</p>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE — Load dashboard data
+════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }                             from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged }      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc,
+         collection, query, where,
+         orderBy, limit, getDocs }                   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { firebaseConfig } from './firebase.js';
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const DAYS = [
+    { id:'Day 1', label:'Day 1', title:'Tokens & Vectors' },
+    { id:'Day 2', label:'Day 2', title:'Transformers & MoE' },
+    { id:'Day 3', label:'Day 3', title:'RLHF & Constitutional AI' },
+    { id:'Day 4', label:'Day 4', title:'RAG & Context Windows' },
+    { id:'Day 5', label:'Day 5', title:'Prompt Engineering' },
+    { id:'Day 6', label:'Day 6', title:'Reasoning & Multimodality' },
+    { id:'Day 7', label:'Day 7', title:'Enterprise AI & Security' }
+];
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'auth.html'; return; }
+
+    // ── Set header ───────────────────────────────────────────
+    document.getElementById('user-avatar').textContent = (user.displayName||user.email||'U').charAt(0).toUpperCase();
+    document.getElementById('user-name').textContent   = user.displayName || user.email;
+    document.getElementById('hero-sub').textContent    = `Welcome back, ${user.displayName || 'Learner'}! Here's your progress.`;
+
+    // ── Load user profile ────────────────────────────────────
+    const userSnap = await getDoc(doc(db, 'users', user.uid));
+    const profile  = userSnap.exists() ? userSnap.data() : {};
+
+    const totalQ  = profile.totalQuizzes  || 0;
+    const highest = profile.highestScore  || 0;
+    const avgScore= totalQ > 0 ? Math.round((profile.totalScore||0) / totalQ) : 0;
+    const daysArr = profile.learningDaysCompleted || [];
+
+    // ── Populate stat cards ──────────────────────────────────
+    document.getElementById('st-total').textContent = totalQ;
+    document.getElementById('st-avg').textContent   = totalQ > 0 ? `${avgScore}%` : '—';
+    document.getElementById('st-high').textContent  = totalQ > 0 ? `${highest}%`  : '—';
+    document.getElementById('st-days').textContent  = `${daysArr.length}/7`;
+
+    // ── Populate ring ────────────────────────────────────────
+    const completionPct = Math.round((daysArr.length / 7) * 100);
+    document.getElementById('ring-pct').textContent = `${completionPct}%`;
+    // Circumference = 2π × 50 ≈ 314.16
+    setTimeout(() => {
+        const offset = 314.16 - (314.16 * completionPct / 100);
+        const circle = document.getElementById('ring-circle');
+        circle.style.transition     = 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)';
+        circle.style.strokeDashoffset = offset;
+    }, 400);
+
+    // ── Populate progress bars ───────────────────────────────
+    const progList = document.getElementById('progress-list');
+    progList.innerHTML = DAYS.map(d => {
+        const done = daysArr.includes(d.id);
+        return `<div class="prog-row">
+            <div class="prog-label">${d.label}</div>
+            <div class="prog-track">
+                <div class="prog-fill" style="width:${done?'100':'0'}%"></div>
+            </div>
+            <div class="prog-check ${done?'check-done':'check-undone'}">${done?'✓':'·'}</div>
+        </div>`;
+    }).join('');
+
+    // ── Load quiz history (most recent 20) ───────────────────
+    try {
+        const q    = query(
+            collection(db, 'quizResults'),
+            where('uid', '==', user.uid),
+            orderBy('timestamp', 'desc'),
+            limit(20)
+        );
+        const snap = await getDocs(q);
+
+        if (!snap.empty) {
+            let rows = '';
+            snap.forEach(d => {
+                const data = d.data();
+                const date = data.timestamp?.toDate
+                    ? data.timestamp.toDate().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'})
+                    : 'N/A';
+                const pct  = data.percentage || 0;
+                const cls  = pct >= 70 ? 'badge-pass' : pct >= 50 ? 'badge-mid' : 'badge-fail';
+                rows += `<tr>
+                    <td>${date}</td>
+                    <td>${data.score} / ${data.total}</td>
+                    <td><span class="badge ${cls}">${pct}%</span></td>
+                </tr>`;
+            });
+            document.getElementById('history-area').innerHTML =
+                `<table class="h-table">
+                    <thead><tr><th>Date</th><th>Score</th><th>Result</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+        }
+    } catch(e) { console.warn('Could not load quiz history:', e); }
+
+    // ── Hide auth overlay ────────────────────────────────────
+    document.getElementById('auth-overlay').classList.add('hidden');
+});
+
+window.handleLogout = async () => {
+    await signOut(auth);
+    window.location.href = 'auth.html';
+};
+</script>
+</body>
+</html>

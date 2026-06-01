@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,352 +6,520 @@
     <title>LLM Mastery Hub | XceptionalLEARNING</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        /* ═══════════════════════════════════════════
+           ORIGINAL STYLES — all kept exactly as-was
+        ═══════════════════════════════════════════ */
         :root {
             --xcept-dark-blue: #3e5c76;
-            --xcept-green: #8eb444;
-            --xcept-orange: #f08b4c;
-            --xcept-light-blue: #00afee;
-            --bg-soft: #f8fafc;
-            --text-dark: #1e293b;
+            --xcept-green:     #8eb444;
+            --xcept-orange:    #f08b4c;
+            --xcept-light-blue:#00afee;
+            --bg-soft:         #f8fafc;
+            --text-dark:       #1e293b;
         }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-soft);
-            color: var(--text-dark);
-            margin: 0;
-            line-height: 1.6;
+        body { font-family:'Roboto',sans-serif; background-color:var(--bg-soft); color:var(--text-dark); margin:0; line-height:1.6; }
+
+        header { background:white; padding:2rem 1rem; text-align:center; border-bottom:5px solid var(--xcept-light-blue); box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+        .logo-img { max-width:350px; height:auto; }
+        .hero-headline { font-family:'Montserrat',sans-serif; color:var(--xcept-dark-blue); font-size:2.2rem; margin:10px 0; letter-spacing:-1px; }
+
+        nav { background:var(--xcept-dark-blue); display:flex; justify-content:center; position:sticky; top:0; z-index:1000; }
+        nav button { background:none; border:none; color:white; padding:1.2rem 2rem; cursor:pointer; font-weight:500; font-family:'Montserrat',sans-serif; transition:0.3s; text-transform:uppercase; font-size:0.9rem; }
+        nav button:hover, nav button.active-btn { background:var(--xcept-orange); }
+
+        .main-container { max-width:1100px; margin:3rem auto; padding:0 2rem; }
+
+        section { display:none; animation:fadeIn 0.6s ease; }
+        section.active { display:block; }
+
+        @keyframes fadeIn { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+
+        .learning-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; }
+
+        .plan-card { background:white; padding:2rem; border-radius:15px; box-shadow:0 10px 20px rgba(0,0,0,0.04); border-top:6px solid var(--xcept-green); }
+        .day-badge { background:var(--xcept-dark-blue); color:white; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold; }
+
+        /* NEW: "Mark complete" button on cards */
+        .mark-done-btn {
+            margin-top:1.2rem; display:inline-block;
+            background:none; border:1.5px solid var(--xcept-green);
+            color:var(--xcept-green); border-radius:20px;
+            padding:4px 14px; font-size:0.78rem; font-weight:700;
+            cursor:pointer; transition:0.2s; font-family:'Montserrat',sans-serif;
         }
-
-        header {
-            background: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            border-bottom: 5px solid var(--xcept-light-blue);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        .mark-done-btn:hover, .mark-done-btn.done {
+            background:var(--xcept-green); color:white;
         }
+        .mark-done-btn.done { cursor:default; }
 
-        .logo-img {
-            max-width: 350px;
-            height: auto;
+        .example-callout { background:#f0f9ff; border-left:4px solid var(--xcept-light-blue); padding:1rem; margin:1.5rem 0; border-radius:0 8px 8px 0; font-size:0.9rem; }
+
+        .flash-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:2rem; }
+        .f-card { height:200px; perspective:1000px; cursor:pointer; }
+        .f-card-inner { position:relative; width:100%; height:100%; transition:transform 0.6s; transform-style:preserve-3d; }
+        .f-card.flipped .f-card-inner { transform:rotateY(180deg); }
+        .f-front,.f-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; display:flex; align-items:center; justify-content:center; padding:1.5rem; border-radius:15px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
+        .f-front { background:var(--xcept-light-blue); color:white; font-weight:bold; font-size:1.1rem; }
+        .f-back  { background:white; color:var(--text-dark); transform:rotateY(180deg); border:2px solid var(--xcept-light-blue); }
+
+        .quiz-box { background:white; padding:3rem; border-radius:20px; box-shadow:0 15px 30px rgba(0,0,0,0.05); }
+        .q-wrap { margin-bottom:2rem; }
+        .q-title { font-weight:700; color:var(--xcept-dark-blue); margin-bottom:1rem; }
+        .ans-label { display:block; padding:12px 20px; margin:8px 0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; cursor:pointer; transition:all 0.2s; }
+        .ans-label:hover { border-color:var(--xcept-orange); background:#fff7ed; }
+        input[type="radio"]:checked+span { font-weight:bold; color:var(--xcept-orange); }
+        .btn-submit { background:var(--xcept-orange); color:white; padding:1rem 3rem; border:none; border-radius:50px; font-weight:bold; cursor:pointer; display:block; margin:2rem auto; font-size:1rem; }
+        .btn-submit:hover { background:#e07840; }
+
+        footer { text-align:center; padding:5rem 1rem; background:var(--xcept-dark-blue); color:#cbd5e1; margin-top:4rem; }
+
+        /* ═══════════════════════════════════════════
+           NEW STYLES — User bar & score feedback
+        ═══════════════════════════════════════════ */
+
+        /* User bar (right side of nav) */
+        .nav-inner {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            width:100%;
+            position:relative;
         }
-
-        .hero-headline {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--xcept-dark-blue);
-            font-size: 2.2rem;
-            margin: 10px 0;
-            letter-spacing: -1px;
+        .nav-tabs { display:flex; }
+        .user-bar {
+            position:absolute;
+            right:1rem;
+            display:flex;
+            align-items:center;
+            gap:0.6rem;
+            font-size:0.8rem;
+            color:rgba(255,255,255,0.9);
         }
-
-        nav {
-            background: var(--xcept-dark-blue);
-            display: flex;
-            justify-content: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        .user-avatar {
+            width:30px; height:30px;
+            background:var(--xcept-orange);
+            border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:0.82rem; color:white;
+            font-family:'Montserrat',sans-serif;
         }
-
-        nav button {
-            background: none;
-            border: none;
-            color: white;
-            padding: 1.2rem 2rem;
-            cursor: pointer;
-            font-weight: 500;
-            font-family: 'Montserrat', sans-serif;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 0.9rem;
+        .nav-link-btn {
+            background:rgba(255,255,255,0.12);
+            border:1px solid rgba(255,255,255,0.2);
+            color:white; padding:0.3rem 0.8rem;
+            border-radius:8px; cursor:pointer;
+            font-size:0.78rem; font-family:'Montserrat',sans-serif;
+            font-weight:600; transition:0.2s;
+            text-decoration:none;
         }
+        .nav-link-btn:hover { background:rgba(255,255,255,0.22); }
 
-        nav button:hover, nav button.active-btn {
-            background: var(--xcept-orange);
+        /* Score result card */
+        #score-output {
+            background:#f8fafc;
+            border-radius:16px;
+            padding:2rem;
+            margin-top:1.5rem;
+            display:none;
+            text-align:center;
         }
+        #score-output.visible { display:block; animation:fadeIn 0.5s ease; }
+        .score-big { font-size:2.8rem; font-weight:800; font-family:'Montserrat',sans-serif; }
+        .score-pct { font-size:1.2rem; font-weight:600; color:#64748b; margin-top:0.3rem; }
+        .score-msg { margin-top:0.8rem; font-size:1rem; }
+        .score-save-note { font-size:0.82rem; color:#94a3b8; margin-top:0.6rem; }
 
-        .main-container {
-            max-width: 1100px;
-            margin: 3rem auto;
-            padding: 0 2rem;
+        /* Saving toast */
+        .toast {
+            position:fixed; bottom:1.5rem; right:1.5rem;
+            background:var(--xcept-dark-blue); color:white;
+            padding:0.75rem 1.3rem; border-radius:12px;
+            font-size:0.88rem; font-family:'Montserrat',sans-serif; font-weight:600;
+            opacity:0; transform:translateY(10px);
+            transition:opacity 0.3s, transform 0.3s;
+            z-index:9999; pointer-events:none;
         }
+        .toast.show { opacity:1; transform:translateY(0); }
 
-        section {
-            display: none;
-            animation: fadeIn 0.6s ease;
+        /* Auth loading overlay */
+        #auth-overlay {
+            position:fixed; inset:0; background:white;
+            display:flex; align-items:center; justify-content:center;
+            z-index:9000; transition:opacity 0.4s;
         }
-
-        section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        #auth-overlay.hidden { opacity:0; pointer-events:none; }
+        .loader { display:flex; gap:8px; }
+        .loader span {
+            width:12px; height:12px; border-radius:50%;
+            animation:bounce 1.1s ease-in-out infinite;
         }
-
-        .learning-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .plan-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.04);
-            border-top: 6px solid var(--xcept-green);
-        }
-
-        .day-badge {
-            background: var(--xcept-dark-blue);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .example-callout {
-            background: #f0f9ff;
-            border-left: 4px solid var(--xcept-light-blue);
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.9rem;
-        }
-
-        .flash-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .f-card {
-            height: 200px;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .f-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-
-        .f-card.flipped .f-card-inner { transform: rotateY(180deg); }
-
-        .f-front, .f-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .f-front { background: var(--xcept-light-blue); color: white; font-weight: bold; font-size: 1.1rem; }
-        .f-back { background: white; color: var(--text-dark); transform: rotateY(180deg); border: 2px solid var(--xcept-light-blue); }
-
-        .quiz-box {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
-        }
-
-        .q-wrap { margin-bottom: 2rem; }
-        .q-title { font-weight: 700; color: var(--xcept-dark-blue); margin-bottom: 1rem; }
-        
-        .ans-label {
-            display: block;
-            padding: 12px 20px;
-            margin: 8px 0;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ans-label:hover { border-color: var(--xcept-orange); background: #fff7ed; }
-        input[type="radio"]:checked + span { font-weight: bold; color: var(--xcept-orange); }
-
-        .btn-submit {
-            background: var(--xcept-orange); color: white; padding: 1rem 3rem; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; display: block; margin: 2rem auto; font-size: 1rem;
-        }
-
-        footer { text-align: center; padding: 5rem 1rem; background: var(--xcept-dark-blue); color: #cbd5e1; margin-top: 4rem; }
+        .loader span:nth-child(1){background:var(--xcept-light-blue);animation-delay:0s}
+        .loader span:nth-child(2){background:var(--xcept-green);animation-delay:0.2s}
+        .loader span:nth-child(3){background:var(--xcept-orange);animation-delay:0.4s}
+        @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
     </style>
 </head>
 <body>
+
+<!-- Auth loading overlay (hidden once auth state resolves) -->
+<div id="auth-overlay">
+    <div class="loader">
+        <span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast"></div>
 
 <header>
     <div class="logo-box">
         <img src="XL.jpeg" alt="XceptionalLEARNING Logo" class="logo-img">
     </div>
     <h1 class="hero-headline">Advanced Architect's Guide to LLMs</h1>
-    <p style="color: var(--xcept-dark-blue); font-weight: 500;">Educational Resources for the Next Generation of AI Professionals</p>
+    <p style="color:var(--xcept-dark-blue);font-weight:500;">Educational Resources for the Next Generation of AI Professionals</p>
 </header>
 
 <nav>
-    <button onclick="navTo('learning', this)" class="active-btn">Learning Content</button>
-    <button onclick="navTo('flashcards', this)">Flashcards</button>
-    <button onclick="navTo('quiz', this)">knowledge quiz</button>
+    <div class="nav-inner">
+        <div class="nav-tabs">
+            <button onclick="navTo('learning',this)"   class="active-btn">Learning Content</button>
+            <button onclick="navTo('flashcards',this)"             >Flashcards</button>
+            <button onclick="navTo('quiz',this)"                   >Knowledge Quiz</button>
+        </div>
+        <!-- User bar — filled by JS once auth resolves -->
+        <div class="user-bar" id="user-bar" style="display:none;">
+            <div class="user-avatar" id="user-avatar">?</div>
+            <span id="user-name-display"></span>
+            <a href="dashboard.html" class="nav-link-btn">Dashboard</a>
+            <button class="nav-link-btn" onclick="handleSignOut()">Sign Out</button>
+        </div>
+    </div>
 </nav>
 
 <div class="main-container">
+
+    <!-- ══════════════  LEARNING CONTENT  ══════════════ -->
     <section id="learning" class="active">
-        <h2 style="text-align: center; color: var(--xcept-orange);">Weekly Learning Roadmap</h2>
+        <h2 style="text-align:center;color:var(--xcept-orange);">Weekly Learning Roadmap</h2>
         <div class="learning-grid">
-            <div class="plan-card">
+
+            <div class="plan-card" data-day="Day 1">
                 <span class="day-badge">DAY 1</span>
                 <h3>Tokens, Vectors & Data Learning</h3>
                 <p>LLMs process text through <strong>Tokenization</strong>, where sentences are broken into units (roughly 3/4 of a word). These tokens are converted into numerical <strong>Vectors</strong> (mathematical lists) so the computer can understand meaning based on spatial relationships between concepts.</p>
                 <div class="example-callout"><strong>Concept:</strong> Computers understand that "King" is to "Man" as "Queen" is to "Woman" by calculating the distance between their vectors.</div>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 1')">✓ Mark Complete</button>
             </div>
 
-            <div class="plan-card" style="border-top-color: var(--xcept-orange);">
+            <div class="plan-card" style="border-top-color:var(--xcept-orange);" data-day="Day 2">
                 <span class="day-badge">DAY 2</span>
                 <h3>Transformers & MoE Architecture</h3>
-                <p>Modern AIs like ChatGPT use <strong>Generative Pre-trained Transformer</strong> architecture. Advanced versions use <strong>Mixture of Experts (MoE)</strong>, which routes tasks to specialized sub-networks. Instead of running the whole model, only specific "experts" (like a math or translation expert) are activated to save energy and time.</p>
+                <p>Modern AIs like ChatGPT use <strong>Generative Pre-trained Transformer</strong> architecture. Advanced versions use <strong>Mixture of Experts (MoE)</strong>, which routes tasks to specialized sub-networks. Instead of running the whole model, only specific "experts" are activated to save energy and time.</p>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 2')">✓ Mark Complete</button>
             </div>
 
-            <div class="plan-card" style="border-top-color: var(--xcept-light-blue);">
+            <div class="plan-card" style="border-top-color:var(--xcept-light-blue);" data-day="Day 3">
                 <span class="day-badge">DAY 3</span>
                 <h3>Training: RLHF & Constitutional AI</h3>
                 <p>Models are refined through <strong>Reinforcement Learning from Human Feedback (RLHF)</strong>, where humans rank answers to improve safety. Claude uses <strong>Constitutional AI</strong>, where the model follows a "constitution" of rules to self-correct and avoid harmful outputs autonomously.</p>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 3')">✓ Mark Complete</button>
             </div>
 
-            <div class="plan-card">
+            <div class="plan-card" data-day="Day 4">
                 <span class="day-badge">DAY 4</span>
                 <h3>RAG & Long Context Windows</h3>
                 <p><strong>Retrieval-Augmented Generation (RAG)</strong> allows AI to search external databases for live info, reducing "hallucinations." Meanwhile, a <strong>Long Context Window</strong> (like Gemini's 2 million tokens) allows the AI to remember thousands of pages of text in a single conversation.</p>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 4')">✓ Mark Complete</button>
             </div>
 
-            <div class="plan-card" style="border-top-color: var(--xcept-orange);">
+            <div class="plan-card" style="border-top-color:var(--xcept-orange);" data-day="Day 5">
                 <span class="day-badge">DAY 5</span>
                 <h3>Advanced Prompt Engineering</h3>
                 <p>The practice of crafting inputs for better accuracy. Core components include a <strong>Role</strong> (Persona), <strong>Task</strong> (Action verb), <strong>Context</strong> (Background), and <strong>Specifics</strong> (Formatting). Assigning a clear role can improve model accuracy by up to 20%.</p>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 5')">✓ Mark Complete</button>
             </div>
 
-            <div class="plan-card" style="border-top-color: var(--xcept-light-blue);">
+            <div class="plan-card" style="border-top-color:var(--xcept-light-blue);" data-day="Day 6">
                 <span class="day-badge">DAY 6</span>
                 <h3>Reasoning & Multimodality</h3>
                 <p><strong>Chain-of-Thought</strong> prompting asks the AI to "think step-by-step," boosting logic on complex problems by 90%. <strong>Native Multimodal</strong> models (like Gemini) process text, audio, images, and video simultaneously in one unified architecture.</p>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 6')">✓ Mark Complete</button>
             </div>
-            
-            <div class="plan-card">
+
+            <div class="plan-card" data-day="Day 7">
                 <span class="day-badge">DAY 7</span>
                 <h3>Enterprise AI & Security</h3>
                 <p>Tools like <strong>Writer</strong> use <strong>Palmyra</strong>, a family of secure LLMs built specifically for high-security industries like Finance and Law. Unlike consumer AIs, these guarantee that private company data is never used to train future public models.</p>
+                <button class="mark-done-btn" onclick="markDay(this,'Day 7')">✓ Mark Complete</button>
             </div>
+
         </div>
     </section>
 
+    <!-- ══════════════  FLASHCARDS  ══════════════ -->
     <section id="flashcards">
-        <h2 style="text-align: center; color: var(--xcept-light-blue); margin-bottom: 2rem;">Core Concept Flashcards</h2>
+        <h2 style="text-align:center;color:var(--xcept-light-blue);margin-bottom:2rem;">Core Concept Flashcards</h2>
         <div class="flash-grid" id="fc-box"></div>
     </section>
 
+    <!-- ══════════════  QUIZ  ══════════════ -->
     <section id="quiz">
         <div class="quiz-box">
-            <h2 style="color: var(--xcept-orange); border-bottom: 1px solid #eee; padding-bottom: 1rem;">Comprehensive Assessment</h2>
+            <h2 style="color:var(--xcept-orange);border-bottom:1px solid #eee;padding-bottom:1rem;">Comprehensive Assessment</h2>
             <div id="quiz-list"></div>
-            <button class="btn-submit" onclick="gradeUserQuiz()">Calculate My Score</button>
-            <div id="score-output" style="text-align: center; font-size: 1.4rem; font-weight: bold; margin-top: 1rem;"></div>
+            <button class="btn-submit" onclick="gradeAndSave()">Calculate My Score</button>
+            <!-- Enhanced score output (replaces bare text) -->
+            <div id="score-output"></div>
         </div>
     </section>
+
 </div>
 
 <footer>
     <p>&copy; 2026 XceptionalLEARNING. All rights reserved.</p>
-    <p style="font-size: 0.7rem;">Education content derived from: Technologies.pdf, Prompt engineering.pdf and Content generation tools.pdf.</p>
+    <p style="font-size:0.7rem;">Education content derived from: Technologies.pdf, Prompt engineering.pdf and Content generation tools.pdf.</p>
 </footer>
 
-<script>
-    function navTo(id, btn) {
-        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-btn'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active-btn');
-        window.scrollTo(0,0);
+
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE — Auth guard, save quiz results, track learning
+════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }                                  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged }           from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc,
+         addDoc, collection, arrayUnion,
+         increment, serverTimestamp }                     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { firebaseConfig } from './firebase.js';
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let currentUser = null;
+
+// ── Auth guard: redirect to login if not signed in ──────────
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'auth.html';
+        return;
     }
+    currentUser = user;
 
-    const cards = [
-        { q: "What is a Token?", a: "The smallest unit of data AI processes (approx. 3/4 of a word)." },
-        { q: "Define RAG", a: "Retrieval-Augmented Generation: Searching external data for accuracy." },
-        { q: "Define RLHF", a: "Reinforcement Learning from Human Feedback: Ranking answers to train AI behavior." },
-        { q: "Constitutional AI", a: "AI following ethical rules (a 'constitution') to self-correct behavior." },
-        { q: "What is MoE?", a: "Mixture of Experts: Activating specialized sub-networks for efficiency." },
-        { q: "Chain-of-Thought", a: "Asking AI to solve logic problems 'step-by-step'." },
-        { q: "Native Multimodal", a: "AI built to understand text, images, and audio in one model." },
-        { q: "Role Prompting", a: "Assigning a persona to the AI to improve task relevance." },
-        { q: "Context Window", a: "The total amount of information an AI can remember at once." },
-        { q: "Vectorization", a: "Converting text into numbers (vectors) to map meanings mathematically." },
-        { q: "Few-Shot Prompting", a: "Providing 1-3 examples in a prompt to show the desired style." },
-        { q: "GPT", a: "Generative Pre-trained Transformer: The architecture behind ChatGPT." },
-        { q: "Hallucination", a: "When an AI generates factually incorrect but confident responses." },
-        { q: "API", a: "A bridge allowing different software to exchange data and features." },
-        { q: "Palmyra", a: "An enterprise-focused LLM developed by Writer for high security." }
-    ];
+    // Populate user bar
+    document.getElementById('user-bar').style.display       = 'flex';
+    document.getElementById('user-avatar').textContent      = (user.displayName || user.email || 'U').charAt(0).toUpperCase();
+    document.getElementById('user-name-display').textContent = user.displayName || user.email;
 
-    const fcBox = document.getElementById('fc-box');
-    cards.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'f-card';
-        div.innerHTML = `<div class="f-card-inner"><div class="f-front">${item.q}</div><div class="f-back">${item.a}</div></div>`;
-        div.onclick = () => div.classList.toggle('flipped');
-        fcBox.appendChild(div);
-    });
+    // Restore learning day completion state from Firestore
+    await restoreDayProgress(user.uid);
 
-    const quizData = [
-        { q: "1. One token is roughly equivalent to how many words in English?", o: ["1/4 word", "3/4 word", "2 words"], a: 1 },
-        { q: "2. Which technology activates specialized neural networks via a 'router'?", o: ["RAG", "RLHF", "Mixture of Experts"], a: 2 },
-        { q: "3. Claude uses which training method to adhere to ethical guidelines?", o: ["Constitutional AI", "Single-Shot Prompting", "Data Pipeline"], a: 0 },
-        { q: "4. Asking an AI to 'think step-by-step' is a technique called:", o: ["Emotion Prompting", "Chain-of-Thought", "Few-Shot"], a: 1 },
-        { q: "5. Assigning a clear 'Role' in a prompt can boost accuracy by approximately:", o: ["5%", "20%", "75%"], a: 1 },
-        { q: "6. Which method combines information retrieval with text generation?", o: ["GPT", "RAG", "Vectorization"], a: 1 },
-        { q: "7. 'Native Multimodal' means the model was built from the start to handle:", o: ["Only text and code", "Only images and video", "Text, images, audio, and video together"], a: 2 },
-        { q: "8. What is a 'Context Window'?", o: ["The speed of the AI response", "The amount of info the AI can remember at once", "The price of the API"], a: 1 },
-        { q: "9. An API acts as a communication bridge between:", o: ["The user and the mouse", "Two different software applications", "The screen and the battery"], a: 1 },
-        { q: "10. Which tool is popular for providing real-time citations for every sentence?", o: ["ChatGPT", "Gemini", "Perplexity AI"], a: 2 },
-        { q: "11. Tokenization is the process of breaking text into:", o: ["Paragraphs", "Small meaningful units", "Mathematical formulas"], a: 1 },
-        { q: "12. The 'Transformer' architecture helps AI focus on:", o: ["The user's location", "Important words and context", "Battery life"], a: 1 },
-        { q: "13. In 'Single-Shot' prompting, the model relies on:", o: ["A long dialogue history", "Only that one specific prompt", "Live social media feeds"], a: 1 },
-        { q: "14. Providing the AI with 1-3 examples in a prompt is called:", o: ["Few-Shot Prompting", "Zero-Shot Prompting", "RLHF"], a: 0 },
-        { q: "15. Vectorization converts text into:", o: ["Different languages", "Numerical lists (vectors)", "Images"], a: 1 },
-        { q: "16. In RLHF, human trainers do what with AI responses?", o: ["Delete them", "Rank them from best to poor", "Correct the grammar manually"], a: 1 },
-        { q: "17. Which AI tool is powered by a real-time data pipeline from the X platform?", o: ["Claude", "Grok", "DeepSeek"], a: 1 },
-        { q: "18. Jasper AI is specifically optimized for which use case?", o: ["Coding", "Enterprise Marketing", "Scientific Research"], a: 1 },
-        { q: "19. Important points should be at the start or end of a prompt to avoid:", o: ["Hallucinations", "The 'Lost in the Middle' effect", "High API costs"], a: 1 },
-        { q: "20. Palmyra is an enterprise-focused LLM developed by:", o: ["Google", "Writer", "OpenAI"], a: 1 }
-    ];
+    // Hide loading overlay
+    document.getElementById('auth-overlay').classList.add('hidden');
+});
 
-    const qList = document.getElementById('quiz-list');
-    quizData.forEach((item, i) => {
-        const div = document.createElement('div');
-        div.className = 'q-wrap';
-        div.innerHTML = `<p class="q-title">${item.q}</p>${item.o.map((opt, oi) => `<label class="ans-label"><input type="radio" name="q${i}" value="${oi}"> <span>${opt}</span></label>`).join('')}`;
-        qList.appendChild(div);
-    });
+// ── Sign out ─────────────────────────────────────────────────
+window.handleSignOut = async () => {
+    await signOut(auth);
+    window.location.href = 'auth.html';
+};
 
-    function gradeUserQuiz() {
-        let score = 0;
-        quizData.forEach((item, i) => {
-            const pick = document.querySelector(`input[name="q${i}"]:checked`);
-            if (pick && parseInt(pick.value) === item.a) score++;
+// ── Restore "Mark Complete" button state ────────────────────
+async function restoreDayProgress(uid) {
+    try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (!snap.exists()) return;
+        const completed = snap.data().learningDaysCompleted || [];
+        completed.forEach(day => {
+            const btn = document.querySelector(`.mark-done-btn[data-day="${day}"]`);
+            if (btn) setDoneState(btn);
         });
-        const out = document.getElementById('score-output');
-        out.innerText = `Final Score: ${score} / 20 Correct (${Math.round((score/20)*100)}%)`;
-        out.style.color = score >= 14 ? 'var(--xcept-green)' : 'var(--xcept-orange)';
+    } catch(e) { console.warn('Could not restore day progress', e); }
+}
+
+// ── Mark a learning day complete ────────────────────────────
+window.markDay = async (btn, dayId) => {
+    if (btn.classList.contains('done') || !currentUser) return;
+    setDoneState(btn);
+    try {
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+            learningDaysCompleted: arrayUnion(dayId),
+            lastActive: serverTimestamp()
+        });
+        // Also log to learningProgress collection for history
+        await addDoc(collection(db, 'learningProgress'), {
+            uid:         currentUser.uid,
+            dayId:       dayId,
+            completedAt: serverTimestamp()
+        });
+        showToast(`✓ ${dayId} marked complete!`);
+    } catch(e) { console.error('Error saving day progress', e); }
+};
+
+function setDoneState(btn) {
+    btn.textContent = '✓ Completed';
+    btn.classList.add('done');
+    btn.setAttribute('data-day', btn.getAttribute('data-day') || btn.closest('[data-day]')?.dataset.day || '');
+}
+
+// ── Grade quiz AND save to Firestore ────────────────────────
+window.gradeAndSave = async () => {
+    let score = 0;
+    const answers = [];
+    quizData.forEach((item, i) => {
+        const pick = document.querySelector(`input[name="q${i}"]:checked`);
+        const chosen = pick ? parseInt(pick.value) : -1;
+        const correct = chosen === item.a;
+        if (correct) score++;
+        answers.push({ question: i, chosen, correct });
+    });
+
+    const total   = quizData.length;
+    const pct     = Math.round((score / total) * 100);
+    const pass    = pct >= 70;
+
+    // ── Show enhanced score card ────────────────────────────
+    const out = document.getElementById('score-output');
+    out.className = 'visible';
+    out.innerHTML = `
+        <div class="score-big" style="color:${pass ? 'var(--xcept-green)' : 'var(--xcept-orange)'}">
+            ${score} / ${total}
+        </div>
+        <div class="score-pct">${pct}% Correct</div>
+        <div class="score-msg">${pass
+            ? '🎉 Excellent work! You\'ve mastered this material.'
+            : '📚 Keep studying — you\'ll nail it next time!'}</div>
+        <div class="score-save-note" id="save-note">Saving your result…</div>
+    `;
+    out.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+    // ── Save to Firestore if signed in ──────────────────────
+    if (!currentUser) {
+        document.getElementById('save-note').textContent = 'Sign in to save your scores.';
+        return;
     }
+
+    try {
+        // 1. Add individual quiz result document
+        await addDoc(collection(db, 'quizResults'), {
+            uid:        currentUser.uid,
+            score,
+            total,
+            percentage: pct,
+            answers,           // full answer breakdown stored
+            timestamp:  serverTimestamp()
+        });
+
+        // 2. Update aggregate stats on user profile
+        const userRef  = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        const prev     = userSnap.exists() ? userSnap.data() : {};
+        const newHigh  = Math.max(prev.highestScore || 0, pct);
+
+        await updateDoc(userRef, {
+            totalQuizzes: increment(1),
+            totalScore:   increment(pct),    // store sum; dashboard divides for avg
+            highestScore: newHigh,
+            lastActive:   serverTimestamp()
+        });
+
+        document.getElementById('save-note').textContent = '✓ Score saved to your dashboard!';
+        showToast('Quiz result saved to Dashboard!');
+    } catch(e) {
+        console.error('Error saving quiz result', e);
+        document.getElementById('save-note').textContent = 'Could not save — check your connection.';
+    }
+};
+
+// ── Toast helper ─────────────────────────────────────────────
+window.showToast = function(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+};
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     ORIGINAL JAVASCRIPT — Flashcards + Quiz render (unchanged)
+════════════════════════════════════════════════════════════ -->
+<script>
+function navTo(id, btn) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active-btn'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active-btn');
+    window.scrollTo(0,0);
+}
+
+/* ── Flashcards ──────────────────────────────────────────── */
+const cards = [
+    { q:"What is a Token?",     a:"The smallest unit of data AI processes (approx. 3/4 of a word)." },
+    { q:"Define RAG",           a:"Retrieval-Augmented Generation: Searching external data for accuracy." },
+    { q:"Define RLHF",          a:"Reinforcement Learning from Human Feedback: Ranking answers to train AI behavior." },
+    { q:"Constitutional AI",    a:"AI following ethical rules (a 'constitution') to self-correct behavior." },
+    { q:"What is MoE?",         a:"Mixture of Experts: Activating specialized sub-networks for efficiency." },
+    { q:"Chain-of-Thought",     a:"Asking AI to solve logic problems 'step-by-step'." },
+    { q:"Native Multimodal",    a:"AI built to understand text, images, and audio in one model." },
+    { q:"Role Prompting",       a:"Assigning a persona to the AI to improve task relevance." },
+    { q:"Context Window",       a:"The total amount of information an AI can remember at once." },
+    { q:"Vectorization",        a:"Converting text into numbers (vectors) to map meanings mathematically." },
+    { q:"Few-Shot Prompting",   a:"Providing 1-3 examples in a prompt to show the desired style." },
+    { q:"GPT",                  a:"Generative Pre-trained Transformer: The architecture behind ChatGPT." },
+    { q:"Hallucination",        a:"When an AI generates factually incorrect but confident responses." },
+    { q:"API",                  a:"A bridge allowing different software to exchange data and features." },
+    { q:"Palmyra",              a:"An enterprise-focused LLM developed by Writer for high security." }
+];
+
+const fcBox = document.getElementById('fc-box');
+cards.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'f-card';
+    div.innerHTML = `<div class="f-card-inner"><div class="f-front">${item.q}</div><div class="f-back">${item.a}</div></div>`;
+    div.onclick = () => div.classList.toggle('flipped');
+    fcBox.appendChild(div);
+});
+
+/* ── Quiz ────────────────────────────────────────────────── */
+const quizData = [
+    { q:"1. One token is roughly equivalent to how many words in English?",      o:["1/4 word","3/4 word","2 words"],                                           a:1 },
+    { q:"2. Which technology activates specialized neural networks via a 'router'?", o:["RAG","RLHF","Mixture of Experts"],                                     a:2 },
+    { q:"3. Claude uses which training method to adhere to ethical guidelines?",  o:["Constitutional AI","Single-Shot Prompting","Data Pipeline"],              a:0 },
+    { q:"4. Asking an AI to 'think step-by-step' is a technique called:",         o:["Emotion Prompting","Chain-of-Thought","Few-Shot"],                        a:1 },
+    { q:"5. Assigning a clear 'Role' in a prompt can boost accuracy by approximately:", o:["5%","20%","75%"],                                                   a:1 },
+    { q:"6. Which method combines information retrieval with text generation?",   o:["GPT","RAG","Vectorization"],                                              a:1 },
+    { q:"7. 'Native Multimodal' means the model was built from the start to handle:", o:["Only text and code","Only images and video","Text, images, audio, and video together"], a:2 },
+    { q:"8. What is a 'Context Window'?",                                         o:["The speed of the AI response","The amount of info the AI can remember at once","The price of the API"], a:1 },
+    { q:"9. An API acts as a communication bridge between:",                      o:["The user and the mouse","Two different software applications","The screen and the battery"], a:1 },
+    { q:"10. Which tool is popular for providing real-time citations for every sentence?", o:["ChatGPT","Gemini","Perplexity AI"],                              a:2 },
+    { q:"11. Tokenization is the process of breaking text into:",                 o:["Paragraphs","Small meaningful units","Mathematical formulas"],            a:1 },
+    { q:"12. The 'Transformer' architecture helps AI focus on:",                  o:["The user's location","Important words and context","Battery life"],       a:1 },
+    { q:"13. In 'Single-Shot' prompting, the model relies on:",                   o:["A long dialogue history","Only that one specific prompt","Live social media feeds"], a:1 },
+    { q:"14. Providing the AI with 1-3 examples in a prompt is called:",          o:["Few-Shot Prompting","Zero-Shot Prompting","RLHF"],                        a:0 },
+    { q:"15. Vectorization converts text into:",                                  o:["Different languages","Numerical lists (vectors)","Images"],               a:1 },
+    { q:"16. In RLHF, human trainers do what with AI responses?",                 o:["Delete them","Rank them from best to poor","Correct the grammar manually"], a:1 },
+    { q:"17. Which AI tool is powered by a real-time data pipeline from the X platform?", o:["Claude","Grok","DeepSeek"],                                      a:1 },
+    { q:"18. Jasper AI is specifically optimized for which use case?",            o:["Coding","Enterprise Marketing","Scientific Research"],                    a:1 },
+    { q:"19. Important points should be at the start or end of a prompt to avoid:", o:["Hallucinations","The 'Lost in the Middle' effect","High API costs"],    a:1 },
+    { q:"20. Palmyra is an enterprise-focused LLM developed by:",                 o:["Google","Writer","OpenAI"],                                               a:1 }
+];
+
+const qList = document.getElementById('quiz-list');
+quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-wrap';
+    div.innerHTML = `<p class="q-title">${item.q}</p>${item.o.map((opt,oi)=>`<label class="ans-label"><input type="radio" name="q${i}" value="${oi}"> <span>${opt}</span></label>`).join('')}`;
+    qList.appendChild(div);
+});
+
+/* ── Patch mark-done buttons with their data-day ──────────── */
+document.querySelectorAll('.mark-done-btn').forEach(btn => {
+    const card = btn.closest('[data-day]');
+    if (card) btn.dataset.day = card.dataset.day;
+});
 </script>
 </body>
 </html>
