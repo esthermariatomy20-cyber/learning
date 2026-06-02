@@ -43,7 +43,6 @@
             animation:slideUp 0.5s ease;
         }
 
-        /* Tabs */
         .tab-row {
             display:flex; background:#f1f5f9;
             border-radius:12px; padding:4px; margin-bottom:2rem;
@@ -59,18 +58,15 @@
             box-shadow:0 2px 8px rgba(0,0,0,0.08);
         }
 
-        /* Panels */
         .form-panel { display:none; }
         .form-panel.active { display:block; animation:fadeIn 0.35s ease; }
 
-        /* Text */
         .form-title {
             font-family:'Montserrat',sans-serif; font-size:1.35rem;
             font-weight:700; color:var(--xcept-dark-blue); margin-bottom:0.35rem;
         }
         .form-sub { color:#64748b; font-size:0.88rem; margin-bottom:1.6rem; }
 
-        /* Fields — NO <form> tag, just divs */
         .field { margin-bottom:1.1rem; }
         .field label {
             display:block; font-size:0.78rem; font-weight:600;
@@ -83,20 +79,16 @@
             font-family:'Roboto',sans-serif; font-size:0.95rem;
             color:var(--text-dark); outline:none; background:#fff;
             transition:border-color 0.2s, box-shadow 0.2s;
-            /* Stops browser from treating this as a "form" field */
-            -webkit-appearance: none;
         }
         .field input:focus {
             border-color:var(--xcept-light-blue);
             box-shadow:0 0 0 3px rgba(0,175,238,0.12);
         }
 
-        /* Password strength */
         .strength-bar { height:4px; background:#e2e8f0; border-radius:2px; margin-top:6px; }
         .strength-fill { height:100%; border-radius:2px; transition:width 0.3s,background 0.3s; width:0; }
-        .strength-hint { font-size:0.75rem; color:#94a3b8; margin-top:4px; }
+        .strength-hint { font-size:0.75rem; margin-top:4px; color:#94a3b8; }
 
-        /* Buttons */
         .btn-main {
             width:100%; padding:0.95rem;
             background:var(--xcept-orange); color:#fff;
@@ -106,11 +98,8 @@
             transition:background 0.2s, transform 0.15s, box-shadow 0.2s;
             margin-top:0.4rem;
         }
-        .btn-main:hover:not(:disabled) {
-            background:#e07840; transform:translateY(-1px);
-            box-shadow:0 6px 20px rgba(240,139,76,0.32);
-        }
-        .btn-main:disabled { opacity:0.6; cursor:not-allowed; }
+        .btn-main:hover { background:#e07840; transform:translateY(-1px); box-shadow:0 6px 20px rgba(240,139,76,0.32); }
+        .btn-main:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
         .btn-google {
             width:100%; padding:0.85rem; background:#fff;
@@ -123,7 +112,6 @@
         }
         .btn-google:hover { border-color:var(--xcept-light-blue); background:#f8fafc; }
 
-        /* Divider */
         .divider {
             display:flex; align-items:center;
             gap:0.9rem; margin:1.1rem 0;
@@ -131,24 +119,17 @@
         }
         .divider::before,.divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
 
-        /* Message box */
-        .msg {
-            padding:0.75rem 1rem; border-radius:8px;
-            font-size:0.85rem; margin-bottom:1rem; display:none;
-        }
+        .msg { padding:0.75rem 1rem; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; display:none; }
         .msg.error   { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; display:block; }
         .msg.success { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; display:block; }
 
-        /* Spinner */
         .spinner {
             display:inline-block; width:15px; height:15px;
-            border:2px solid rgba(255,255,255,0.4);
-            border-top-color:#fff; border-radius:50%;
-            animation:spin 0.75s linear infinite;
+            border:2px solid rgba(255,255,255,0.4); border-top-color:#fff;
+            border-radius:50%; animation:spin 0.75s linear infinite;
             margin-right:7px; vertical-align:middle;
         }
 
-        /* Back link */
         .back-link { text-align:center; margin-top:1.4rem; font-size:0.83rem; color:#64748b; }
         .back-link a { color:var(--xcept-light-blue); text-decoration:none; font-weight:500; }
         .back-link a:hover { text-decoration:underline; }
@@ -162,53 +143,32 @@
 <body>
 
 <div class="auth-wrapper">
-
-    <!-- Logo -->
     <div class="logo-area">
         <img src="XL.jpeg" alt="XceptionalLEARNING Logo">
     </div>
 
-    <!-- Card — NOTE: No <form> tag anywhere, just plain divs -->
     <div class="auth-card">
-
-        <!-- Tabs -->
         <div class="tab-row">
             <button class="tab-btn active" id="tab-login"  onclick="switchTab('login')">Login</button>
             <button class="tab-btn"        id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
         </div>
 
-        <!-- ══════════ LOGIN PANEL ══════════ -->
+        <!-- LOGIN -->
         <div class="form-panel active" id="panel-login">
             <p class="form-title">Welcome back!</p>
             <p class="form-sub">Sign in to track your learning progress.</p>
-
             <div id="login-msg" class="msg"></div>
-
             <div class="field">
                 <label>Email Address</label>
-                <input
-                    type="email"
-                    id="login-email"
-                    placeholder="you@example.com"
-                    autocomplete="off">
+                <input type="email" id="login-email" placeholder="you@example.com">
             </div>
-
             <div class="field">
                 <label>Password</label>
-                <input
-                    type="password"
-                    id="login-password"
-                    placeholder="Your password"
-                    autocomplete="off"
-                    onkeydown="if(event.key==='Enter') handleLogin()">
+                <input type="password" id="login-password" placeholder="Your password"
+                       onkeydown="if(event.key==='Enter') handleLogin()">
             </div>
-
-            <button class="btn-main" id="btn-login" onclick="handleLogin()">
-                Sign In
-            </button>
-
+            <button class="btn-main" id="btn-login" onclick="handleLogin()">Sign In</button>
             <div class="divider">or</div>
-
             <button class="btn-google" onclick="handleGoogle()">
                 <svg width="18" height="18" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -220,52 +180,29 @@
             </button>
         </div>
 
-        <!-- ══════════ SIGNUP PANEL ══════════ -->
+        <!-- SIGN UP -->
         <div class="form-panel" id="panel-signup">
             <p class="form-title">Create account</p>
             <p class="form-sub">Join XceptionalLEARNING and start your AI journey.</p>
-
             <div id="signup-msg" class="msg"></div>
-
             <div class="field">
                 <label>Your Name</label>
-                <input
-                    type="text"
-                    id="signup-name"
-                    placeholder="e.g. Ravi Kumar"
-                    autocomplete="off">
+                <input type="text" id="signup-name" placeholder="e.g. Ravi Kumar">
             </div>
-
             <div class="field">
                 <label>Email Address</label>
-                <input
-                    type="email"
-                    id="signup-email"
-                    placeholder="you@example.com"
-                    autocomplete="off">
+                <input type="email" id="signup-email" placeholder="you@example.com">
             </div>
-
             <div class="field">
                 <label>Password</label>
-                <input
-                    type="password"
-                    id="signup-password"
-                    placeholder="Minimum 6 characters"
-                    autocomplete="off"
-                    oninput="checkStrength(this.value)"
-                    onkeydown="if(event.key==='Enter') handleSignup()">
-                <div class="strength-bar">
-                    <div class="strength-fill" id="strength-fill"></div>
-                </div>
+                <input type="password" id="signup-password" placeholder="Minimum 6 characters"
+                       oninput="checkStrength(this.value)"
+                       onkeydown="if(event.key==='Enter') handleSignup()">
+                <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
                 <div class="strength-hint" id="strength-hint"></div>
             </div>
-
-            <button class="btn-main" id="btn-signup" onclick="handleSignup()">
-                Create Account
-            </button>
-
+            <button class="btn-main" id="btn-signup" onclick="handleSignup()">Create Account</button>
             <div class="divider">or</div>
-
             <button class="btn-google" onclick="handleGoogle()">
                 <svg width="18" height="18" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -281,59 +218,64 @@
     </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE SDKs loaded via CDN (no import/export)
+     This avoids the "not defined" error completely
+════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<!-- ════════════════════════════════════════════════
-     FIREBASE — Authentication
-════════════════════════════════════════════════ -->
-<script type="module">
-import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth,
-         signInWithEmailAndPassword,
-         createUserWithEmailAndPassword,
-         signInWithPopup,
-         GoogleAuthProvider,
-         updateProfile,
-         onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore,
-         doc, setDoc, getDoc,
-         serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { firebaseConfig } from './firebase.js';
+<script>
+// ══════════════════════════════════════════════════
+//  STEP 1 — Paste YOUR Firebase config here
+// ══════════════════════════════════════════════════
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig =
+ {
+  apiKey: "AIzaSyD3xlNMLwCMYHOXN2dw3mMleLRJtXPgEV8",
+  authDomain: "website-e0b9c.firebaseapp.com",
+  projectId: "website-e0b9c",
+  storageBucket: "website-e0b9c.firebasestorage.app",
+  messagingSenderId: "481294430393",
+  appId: "1:481294430393:web:9d94dc343bf7aae2432b68",
+  measurementId: "G-PLPB7GF0XW"
+};
+// ══════════════════════════════════════════════════
 
-const app       = initializeApp(firebaseConfig);
-const auth      = getAuth(app);
-const db        = getFirestore(app);
-const gProvider = new GoogleAuthProvider();
+// Start Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
 
-// If already logged in → go to home page
-onAuthStateChanged(auth, user => {
+// If already logged in → go straight to home
+auth.onAuthStateChanged(function(user) {
     if (user) window.location.href = 'index.html';
 });
 
-// ── Create Firestore user document ──────────────────────────
-async function ensureProfile(user) {
-    const ref  = doc(db, 'users', user.uid);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) {
-        await setDoc(ref, {
-            uid:                   user.uid,
-            displayName:           user.displayName || 'Learner',
-            email:                 user.email,
-            createdAt:             serverTimestamp(),
-            lastActive:            serverTimestamp(),
-            totalQuizzes:          0,
-            totalScore:            0,
-            highestScore:          0,
-            learningDaysCompleted: []
-        });
-    }
+// ── Create Firestore profile for new users ───────
+function ensureProfile(user) {
+    var ref = db.collection('users').doc(user.uid);
+    ref.get().then(function(snap) {
+        if (!snap.exists) {
+            ref.set({
+                uid:                   user.uid,
+                displayName:           user.displayName || 'Learner',
+                email:                 user.email,
+                createdAt:             firebase.firestore.FieldValue.serverTimestamp(),
+                lastActive:            firebase.firestore.FieldValue.serverTimestamp(),
+                totalQuizzes:          0,
+                totalScore:            0,
+                highestScore:          0,
+                learningDaysCompleted: []
+            });
+        }
+    });
 }
 
-// ── Friendly error messages ──────────────────────────────────
+// ── Friendly error messages ──────────────────────
 function friendly(code) {
-    const map = {
+    var map = {
         'auth/user-not-found':        'No account found with that email.',
         'auth/wrong-password':        'Incorrect password. Please try again.',
         'auth/invalid-credential':    'Invalid email or password.',
@@ -346,144 +288,126 @@ function friendly(code) {
         'auth/operation-not-allowed': 'Email sign-in not enabled. See Firebase Console.',
         'auth/unauthorized-domain':   'This domain is not authorised in Firebase Console.'
     };
-    // Show the code too so it's easy to debug
-    return map[code] || `Error: ${code}. Please try again.`;
+    return map[code] || ('Error: ' + code + '. Please try again.');
 }
 
-// ── Show message inside the card ────────────────────────────
 function showMsg(id, text, type) {
-    const el       = document.getElementById(id);
+    var el       = document.getElementById(id);
     el.textContent = text;
-    el.className   = `msg ${type}`;
+    el.className   = 'msg ' + type;
 }
 
-// ── Button loading state ─────────────────────────────────────
 function setLoading(btnId, on, label) {
-    const b    = document.getElementById(btnId);
+    var b    = document.getElementById(btnId);
     b.disabled = on;
     b.innerHTML = on
-        ? `<span class="spinner"></span>Please wait…`
+        ? '<span class="spinner"></span>Please wait…'
         : label;
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════════════
 //  LOGIN
-// ════════════════════════════════
-window.handleLogin = async () => {
-    const email = document.getElementById('login-email').value.trim();
-    const pass  = document.getElementById('login-password').value;
+// ══════════════════════════════════════════════════
+function handleLogin() {
+    var email = document.getElementById('login-email').value.trim();
+    var pass  = document.getElementById('login-password').value;
 
-    if (!email) { showMsg('login-msg', 'Please enter your email.', 'error'); return; }
+    if (!email) { showMsg('login-msg', 'Please enter your email.',    'error'); return; }
     if (!pass)  { showMsg('login-msg', 'Please enter your password.', 'error'); return; }
 
     setLoading('btn-login', true, 'Sign In');
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        window.location.href = 'index.html';
-    } catch(e) {
-        console.error('LOGIN ERROR →', e.code, e.message);
-        showMsg('login-msg', friendly(e.code), 'error');
-        setLoading('btn-login', false, 'Sign In');
-    }
-};
 
-// ════════════════════════════════
+    auth.signInWithEmailAndPassword(email, pass)
+        .then(function() {
+            window.location.href = 'index.html';
+        })
+        .catch(function(e) {
+            console.error('LOGIN ERROR:', e.code, e.message);
+            showMsg('login-msg', friendly(e.code), 'error');
+            setLoading('btn-login', false, 'Sign In');
+        });
+}
+
+// ══════════════════════════════════════════════════
 //  SIGN UP
-// ════════════════════════════════
-window.handleSignup = async () => {
-    const name  = document.getElementById('signup-name').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const pass  = document.getElementById('signup-password').value;
+// ══════════════════════════════════════════════════
+function handleSignup() {
+    var name  = document.getElementById('signup-name').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    var pass  = document.getElementById('signup-password').value;
 
-    // ── Validate each field one by one ──────────────────────
-    if (!name) {
-        showMsg('signup-msg', '⚠️ Please enter your name.', 'error');
-        document.getElementById('signup-name').focus();
-        return;
-    }
-    if (!email) {
-        showMsg('signup-msg', '⚠️ Please enter your email address.', 'error');
-        document.getElementById('signup-email').focus();
-        return;
-    }
-    if (!email.includes('@')) {
-        showMsg('signup-msg', '⚠️ Please enter a valid email address.', 'error');
-        document.getElementById('signup-email').focus();
-        return;
-    }
-    if (!pass) {
-        showMsg('signup-msg', '⚠️ Please enter a password.', 'error');
-        document.getElementById('signup-password').focus();
-        return;
-    }
-    if (pass.length < 6) {
-        showMsg('signup-msg', '⚠️ Password must be at least 6 characters.', 'error');
-        document.getElementById('signup-password').focus();
-        return;
-    }
+    // Validate
+    if (!name)  { showMsg('signup-msg', '⚠️ Please enter your name.',         'error'); return; }
+    if (!email) { showMsg('signup-msg', '⚠️ Please enter your email.',        'error'); return; }
+    if (!email.includes('@')) { showMsg('signup-msg', '⚠️ Enter a valid email.', 'error'); return; }
+    if (!pass)  { showMsg('signup-msg', '⚠️ Please enter a password.',        'error'); return; }
+    if (pass.length < 6) { showMsg('signup-msg', '⚠️ Password needs 6+ characters.', 'error'); return; }
 
     setLoading('btn-signup', true, 'Create Account');
 
-    try {
-        // Step 1 — Create account in Firebase Auth
-        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    // Step 1 — Create account
+    auth.createUserWithEmailAndPassword(email, pass)
+        .then(function(cred) {
+            // Step 2 — Save display name
+            return cred.user.updateProfile({ displayName: name })
+                .then(function() {
+                    // Step 3 — Create Firestore profile
+                    ensureProfile({ uid: cred.user.uid, displayName: name, email: email });
+                    // Step 4 — Show success
+                    showMsg('signup-msg', '✅ Account created! Taking you to the hub…', 'success');
+                    setTimeout(function() { window.location.href = 'index.html'; }, 1500);
+                });
+        })
+        .catch(function(e) {
+            console.error('SIGNUP ERROR:', e.code, e.message);
+            showMsg('signup-msg', friendly(e.code), 'error');
+            setLoading('btn-signup', false, 'Create Account');
+        });
+}
 
-        // Step 2 — Save display name
-        await updateProfile(cred.user, { displayName: name });
-
-        // Step 3 — Create Firestore profile document
-        await ensureProfile({ ...cred.user, displayName: name });
-
-        // Step 4 — Success!
-        showMsg('signup-msg', '✅ Account created! Taking you to the hub…', 'success');
-        setTimeout(() => window.location.href = 'index.html', 1500);
-
-    } catch(e) {
-        console.error('SIGNUP ERROR →', e.code, e.message);
-        showMsg('signup-msg', friendly(e.code), 'error');
-        setLoading('btn-signup', false, 'Create Account');
-    }
-};
-
-// ════════════════════════════════
+// ══════════════════════════════════════════════════
 //  GOOGLE SIGN IN
-// ════════════════════════════════
-window.handleGoogle = async () => {
-    try {
-        const result = await signInWithPopup(auth, gProvider);
-        await ensureProfile(result.user);
-        window.location.href = 'index.html';
-    } catch(e) {
-        console.error('GOOGLE ERROR →', e.code, e.message);
-        showMsg('login-msg',  friendly(e.code), 'error');
-        showMsg('signup-msg', friendly(e.code), 'error');
-    }
-};
-</script>
+// ══════════════════════════════════════════════════
+function handleGoogle() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+        .then(function(result) {
+            ensureProfile(result.user);
+            window.location.href = 'index.html';
+        })
+        .catch(function(e) {
+            console.error('GOOGLE ERROR:', e.code, e.message);
+            showMsg('login-msg',  friendly(e.code), 'error');
+            showMsg('signup-msg', friendly(e.code), 'error');
+        });
+}
 
-<!-- Tab switching + password strength meter -->
-<script>
+// ══════════════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════════════
 function switchTab(tab) {
-    ['login','signup'].forEach(t => {
+    ['login','signup'].forEach(function(t) {
         document.getElementById('tab-'  +t).classList.toggle('active', t===tab);
         document.getElementById('panel-'+t).classList.toggle('active', t===tab);
     });
 }
 
+// ══════════════════════════════════════════════════
+//  PASSWORD STRENGTH METER
+// ══════════════════════════════════════════════════
 function checkStrength(val) {
-    let score = 0;
+    var score = 0;
     if (val.length >= 6)           score++;
     if (val.length >= 10)          score++;
     if (/[A-Z]/.test(val))         score++;
     if (/[0-9]/.test(val))         score++;
     if (/[^A-Za-z0-9]/.test(val))  score++;
 
-    const fill  = document.getElementById('strength-fill');
-    const hint  = document.getElementById('strength-hint');
-
+    var fill = document.getElementById('strength-fill');
+    var hint = document.getElementById('strength-hint');
     fill.style.width      = (score/5*100)+'%';
     fill.style.background = score<=1 ? '#ef4444' : score<=3 ? '#f59e0b' : '#22c55e';
-    hint.textContent      = score<=1 ? 'Weak password'
+    hint.textContent      = score<=1 ? 'Weak — keep typing'
                           : score<=3 ? 'Medium — add numbers or symbols'
                           : 'Strong password ✓';
     hint.style.color      = score<=1 ? '#ef4444' : score<=3 ? '#f59e0b' : '#22c55e';
