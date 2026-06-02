@@ -8,12 +8,12 @@
 // STEP 3 ► Copy your config values below
 
 export const firebaseConfig = {
-    apiKey:            "PASTE_YOUR_API_KEY_HERE",
-    authDomain:        "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
-    projectId:         "PASTE_YOUR_PROJECT_ID",
-    storageBucket:     "PASTE_YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "PASTE_YOUR_SENDER_ID",
-    appId:             "PASTE_YOUR_APP_ID"
+    apiKey:            "AIzaSyXXXXXX",        // ← must start with AIzaSy
+    authDomain:        "website.firebaseapp.com",
+    projectId:         "website",
+    storageBucket:     "website.appspot.com",
+    messagingSenderId: "123456789",
+    appId:             "1:123:web:abc123"
 };
 
 // ============================================================
