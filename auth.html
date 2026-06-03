@@ -230,9 +230,7 @@
 // ══════════════════════════════════════════════════
 //  STEP 1 — Paste YOUR Firebase config here
 // ══════════════════════════════════════════════════
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig =
- {
+const firebaseConfig = {
   apiKey: "AIzaSyD3xlNMLwCMYHOXN2dw3mMleLRJtXPgEV8",
   authDomain: "website-e0b9c.firebaseapp.com",
   projectId: "website-e0b9c",
@@ -345,15 +343,30 @@ function handleSignup() {
 
     setLoading('btn-signup', true, 'Create Account');
 
-    // Step 1 — Create account
+    // Step 1 — Create account in Firebase Auth
     auth.createUserWithEmailAndPassword(email, pass)
         .then(function(cred) {
+            var user = cred.user;
+
             // Step 2 — Save display name
-            return cred.user.updateProfile({ displayName: name })
+            return user.updateProfile({ displayName: name })
                 .then(function() {
-                    // Step 3 — Create Firestore profile
-                    ensureProfile({ uid: cred.user.uid, displayName: name, email: email });
-                    // Step 4 — Show success
+
+                    // Step 3 — Create Firestore profile and WAIT for it
+                    return db.collection('users').doc(user.uid).set({
+                        uid:                   user.uid,
+                        displayName:           name,
+                        email:                 email,
+                        createdAt:             firebase.firestore.FieldValue.serverTimestamp(),
+                        lastActive:            firebase.firestore.FieldValue.serverTimestamp(),
+                        totalQuizzes:          0,
+                        totalScore:            0,
+                        highestScore:          0,
+                        learningDaysCompleted: []
+                    });
+                })
+                .then(function() {
+                    // Step 4 — Profile saved! Now show success and redirect
                     showMsg('signup-msg', '✅ Account created! Taking you to the hub…', 'success');
                     setTimeout(function() { window.location.href = 'index.html'; }, 1500);
                 });
@@ -372,8 +385,37 @@ function handleGoogle() {
     var provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
         .then(function(result) {
-            ensureProfile(result.user);
-            window.location.href = 'index.html';
+            var user = result.user;
+            var ref  = db.collection('users').doc(user.uid);
+
+            // Check if profile exists — if not create it first
+            // then redirect — this ensures data is saved before going to index
+            return ref.get().then(function(snap) {
+                if (!snap.exists) {
+                    // New Google user — create full profile first
+                    return ref.set({
+                        uid:                   user.uid,
+                        displayName:           user.displayName || 'Learner',
+                        email:                 user.email,
+                        createdAt:             firebase.firestore.FieldValue.serverTimestamp(),
+                        lastActive:            firebase.firestore.FieldValue.serverTimestamp(),
+                        totalQuizzes:          0,
+                        totalScore:            0,
+                        highestScore:          0,
+                        learningDaysCompleted: []
+                    }).then(function() {
+                        // Profile saved — now redirect
+                        window.location.href = 'index.html';
+                    });
+                } else {
+                    // Existing user — just update lastActive and redirect
+                    return ref.update({
+                        lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(function() {
+                        window.location.href = 'index.html';
+                    });
+                }
+            });
         })
         .catch(function(e) {
             console.error('GOOGLE ERROR:', e.code, e.message);
