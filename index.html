@@ -273,21 +273,29 @@ function restoreDayProgress(uid) {
 function markDay(dayId, btnId) {
     const btn = document.getElementById(btnId);
     if (!btn || btn.classList.contains('done') || !currentUser) return;
-    setDoneState(btn);
 
-    db.collection('users').doc(currentUser.uid).update({
-        learningDaysCompleted: firebase.firestore.FieldValue.arrayUnion(dayId),
-        lastActive:            firebase.firestore.FieldValue.serverTimestamp()
+    // Check if already completed before saving — prevents duplicates
+    db.collection('users').doc(currentUser.uid).get().then(function(snap) {
+        const data         = snap.exists ? snap.data() : {};
+        const completed    = data.learningDaysCompleted || [];
+
+        // If already in array do not add again
+        if (completed.indexOf(dayId) !== -1) {
+            setDoneState(btn);
+            showToast(dayId + ' already completed!');
+            return;
+        }
+
+        // Not in array yet — save it
+        setDoneState(btn);
+        return db.collection('users').doc(currentUser.uid).update({
+            learningDaysCompleted: firebase.firestore.FieldValue.arrayUnion(dayId),
+            lastActive:            firebase.firestore.FieldValue.serverTimestamp()
+        });
     }).then(function() {
         showToast('✓ ' + dayId + ' marked complete!');
     }).catch(function(e) {
         console.error('Error saving day:', e);
-    });
-
-    db.collection('learningProgress').add({
-        uid:         currentUser.uid,
-        dayId:       dayId,
-        completedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 }
 

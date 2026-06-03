@@ -243,8 +243,7 @@ const firebaseConfig = {
   messagingSenderId: "481294430393",
   appId: "1:481294430393:web:9d94dc343bf7aae2432b68",
   measurementId: "G-PLPB7GF0XW"
-};
-// ══════════════════════════════════════════
+};// ══════════════════════════════════════════
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -289,14 +288,19 @@ function loadDashboard(uid) {
         const avgScore = totalQ > 0 ? Math.round((profile.totalScore || 0) / totalQ) : 0;
         const daysArr  = profile.learningDaysCompleted || [];
 
+        // Remove duplicates and cap at 7
+        const uniqueDays = daysArr.filter(function(day, index, self) {
+            return self.indexOf(day) === index;
+        }).slice(0, 7);
+
         // Fill stat cards
         document.getElementById('st-total').textContent = totalQ;
         document.getElementById('st-avg').textContent   = totalQ > 0 ? avgScore + '%' : '—';
         document.getElementById('st-high').textContent  = totalQ > 0 ? highest  + '%' : '—';
-        document.getElementById('st-days').textContent  = daysArr.length + ' / 7';
+        document.getElementById('st-days').textContent  = uniqueDays.length + ' / 7';
 
-        // Fill ring chart
-        const pct = Math.round((daysArr.length / 7) * 100);
+        // Fill ring chart — cap at 100%
+        const pct = Math.min(100, Math.round((uniqueDays.length / 7) * 100));
         document.getElementById('ring-pct').textContent = pct + '%';
         setTimeout(function() {
             const offset = 314.16 - (314.16 * pct / 100);
@@ -308,7 +312,7 @@ function loadDashboard(uid) {
         // Fill progress bars
         const progList = document.getElementById('progress-list');
         progList.innerHTML = DAYS.map(function(d) {
-            const done = daysArr.indexOf(d.id) !== -1;
+            const done = uniqueDays.indexOf(d.id) !== -1;
             return '<div class="prog-row">' +
                 '<div class="prog-label">' + d.label + '</div>' +
                 '<div class="prog-track"><div class="prog-fill" style="width:' + (done ? '100' : '0') + '%"></div></div>' +
@@ -324,18 +328,31 @@ function loadDashboard(uid) {
         document.getElementById('auth-overlay').classList.add('hidden');
     });
 
-    // Step 2 — Load quiz history
+    // Step 2 — Load quiz history (no orderBy = no index needed)
     db.collection('quizResults')
         .where('uid', '==', uid)
-        .orderBy('timestamp', 'desc')
-        .limit(20)
         .get()
         .then(function(snap) {
             if (snap.empty) return;
 
-            let rows = '';
+            // Collect all results into an array
+            const results = [];
             snap.forEach(function(d) {
-                const data = d.data();
+                results.push(d.data());
+            });
+
+            // Sort by timestamp newest first — done in JS so no index needed
+            results.sort(function(a, b) {
+                const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+                const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                return timeB - timeA;
+            });
+
+            // Show only last 20
+            const recent = results.slice(0, 20);
+
+            let rows = '';
+            recent.forEach(function(data) {
                 const date = data.timestamp
                     ? data.timestamp.toDate().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'2-digit' })
                     : 'N/A';
