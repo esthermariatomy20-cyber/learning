@@ -209,7 +209,8 @@
 //  PASTE YOUR FIREBASE CONFIG HERE
 //  Same 7 values from your Firebase Console
 // ══════════════════════════════════════════
-const firebaseConfig = {
+const firebaseConfig = 
+{
   apiKey: "AIzaSyD3xlNMLwCMYHOXN2dw3mMleLRJtXPgEV8",
   authDomain: "website-e0b9c.firebaseapp.com",
   projectId: "website-e0b9c",
@@ -256,10 +257,32 @@ function handleSignOut() {
 
 // ── Restore completed day buttons from Firestore ─────────
 function restoreDayProgress(uid) {
+    // Step 1 — ALWAYS reset ALL 7 buttons to incomplete first
+    // This ensures fresh state on every login
+    for (let i = 1; i <= 7; i++) {
+        const btn = document.getElementById('btn-day' + i);
+        if (btn) {
+            btn.textContent = '✓ Mark Complete';
+            btn.classList.remove('done');
+            btn.disabled    = false;
+        }
+    }
+
+    // Step 2 — Reset quiz save guard for fresh session
+    quizAlreadySaved = false;
+
+    // Step 3 — Load completed days from Firestore
     db.collection('users').doc(uid).get().then(function(snap) {
         if (!snap.exists) return;
         const completed = snap.data().learningDaysCompleted || [];
-        completed.forEach(function(day) {
+
+        // Remove duplicates just in case
+        const uniqueDays = completed.filter(function(day, index, self) {
+            return self.indexOf(day) === index;
+        }).slice(0, 7); // never more than 7
+
+        // Step 4 — Mark only the days that are saved in Firestore
+        uniqueDays.forEach(function(day) {
             const num = day.replace('Day ', '');
             const btn = document.getElementById('btn-day' + num);
             if (btn) setDoneState(btn);
