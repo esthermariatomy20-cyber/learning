@@ -306,6 +306,8 @@ function setDoneState(btn) {
 }
 
 // ── Grade quiz and save result to Firestore ──────────────
+let quizAlreadySaved = false; // guard — prevents saving twice
+
 function gradeAndSave() {
     let score   = 0;
     const answers = [];
@@ -336,6 +338,13 @@ function gradeAndSave() {
         document.getElementById('save-note').textContent = 'Sign in to save your scores.';
         return;
     }
+
+    // Stop here if already saved — prevents duplicate on double click
+    if (quizAlreadySaved) {
+        document.getElementById('save-note').textContent = '✓ Score already saved to your dashboard!';
+        return;
+    }
+    quizAlreadySaved = true;
 
     // Save to Firestore
     db.collection('quizResults').add({
