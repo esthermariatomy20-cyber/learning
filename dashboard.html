@@ -287,11 +287,19 @@ function loadDashboard(uid) {
         const totalQ   = profile.totalQuizzes  || 0;
         const highest  = profile.highestScore  || 0;
         const avgScore = totalQ > 0 ? Math.round((profile.totalScore || 0) / totalQ) : 0;
-        // Get learning days completed this session from Firestore
+        // Get learning days — remove duplicates — sort Day 1 to Day 7
         const daysArr    = profile.learningDaysCompleted || [];
-        const uniqueDays = daysArr.filter(function(day, index, self) {
+        var uniqueDays   = daysArr.filter(function(day, index, self) {
             return self.indexOf(day) === index;
-        }).slice(0, 7);
+        });
+
+        // Sort correctly: Day 1, Day 2, Day 3 ... Day 7
+        uniqueDays.sort(function(a, b) {
+            return parseInt(a.replace('Day ', '')) - parseInt(b.replace('Day ', ''));
+        });
+
+        // Cap at 7
+        uniqueDays = uniqueDays.slice(0, 7);
 
         // Fill stat cards
         document.getElementById('st-total').textContent = totalQ;
@@ -309,16 +317,21 @@ function loadDashboard(uid) {
             circle.style.strokeDashoffset = offset;
         }, 400);
 
-        // Fill progress bars — shows which days completed this session
-        const progList = document.getElementById('progress-list');
-        progList.innerHTML = DAYS.map(function(d) {
-            const done = uniqueDays.indexOf(d.id) !== -1;
-            return '<div class="prog-row">' +
-                '<div class="prog-label">' + d.label + '</div>' +
-                '<div class="prog-track"><div class="prog-fill" style="width:' + (done ? '100' : '0') + '%"></div></div>' +
-                '<div class="prog-check ' + (done ? 'check-done' : 'check-undone') + '">' + (done ? '✓' : '·') + '</div>' +
-            '</div>';
-        }).join('');
+        // Fill progress bars
+        var progList2 = document.getElementById('progress-list');
+        var barsHTML  = '';
+        DAYS.forEach(function(d) {
+            var isDone     = uniqueDays.indexOf(d.id) !== -1;
+            var barWidth   = isDone ? '100%' : '0%';
+            var checkCls   = isDone ? 'check-done' : 'check-undone';
+            var checkTxt   = isDone ? '&#10003;' : '&middot;';
+            barsHTML += '<div class="prog-row">'
+                + '<div class="prog-label">' + d.label + '</div>'
+                + '<div class="prog-track"><div class="prog-fill" style="width:' + barWidth + '"></div></div>'
+                + '<div class="prog-check ' + checkCls + '">' + checkTxt + '</div>'
+                + '</div>';
+        });
+        progList2.innerHTML = barsHTML;
 
         // Hide loading overlay
         document.getElementById('auth-overlay').classList.add('hidden');
