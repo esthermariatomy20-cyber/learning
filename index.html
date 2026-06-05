@@ -247,13 +247,28 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById('auth-overlay').classList.add('hidden');
 });
 
-// ── Sign out — simple, no Firestore update needed ───────────
+// ── Sign out — clear learning days then signout ─────────────
 function handleSignOut() {
-    sessionDays      = [];   // clear session memory
+    sessionDays      = [];
     quizAlreadySaved = false;
-    auth.signOut().then(function() {
-        window.location.href = 'auth.html';
-    });
+    if (currentUser) {
+        // Clear learningDaysCompleted so next login starts fresh
+        db.collection('users').doc(currentUser.uid).update({
+            learningDaysCompleted: []
+        }).then(function() {
+            return auth.signOut();
+        }).then(function() {
+            window.location.href = 'auth.html';
+        }).catch(function() {
+            auth.signOut().then(function() {
+                window.location.href = 'auth.html';
+            });
+        });
+    } else {
+        auth.signOut().then(function() {
+            window.location.href = 'auth.html';
+        });
+    }
 }
 
 // ── Reset ALL day buttons fresh on every login ─────────────
@@ -275,9 +290,7 @@ function restoreDayProgress(uid) {
     quizAlreadySaved = false;
 }
 
-// ── Mark a day complete — session only, resets on every login ──
-// sessionDays tracks completed days in memory only
-// It resets automatically when user logs out or closes browser
+// ── Mark a day complete — saves to Firestore for dashboard ──
 var sessionDays = [];
 
 function markDay(dayId, btnId) {
@@ -290,14 +303,21 @@ function markDay(dayId, btnId) {
         return;
     }
 
-    // Mark button as done
+    // Mark button as done immediately
     setDoneState(btn);
 
-    // Save to session memory only — NOT to Firestore
-    // This means it resets fresh on every login automatically
+    // Add to session memory
     sessionDays.push(dayId);
 
-    showToast('✓ ' + dayId + ' marked complete!');
+    // Save to Firestore so dashboard can read it
+    db.collection('users').doc(currentUser.uid).update({
+        learningDaysCompleted: firebase.firestore.FieldValue.arrayUnion(dayId),
+        lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+        showToast('✓ ' + dayId + ' marked complete!');
+    }).catch(function(e) {
+        console.error('Error saving day:', e);
+    });
 }
 
 function setDoneState(btn) {
