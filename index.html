@@ -352,7 +352,7 @@ function gradeAndSave() {
     }
     quizAlreadySaved = true;
 
-    // Save to Firestore
+    // Step 1 — Save quiz result to quizResults collection
     db.collection('quizResults').add({
         uid:        currentUser.uid,
         score:      score,
@@ -361,16 +361,39 @@ function gradeAndSave() {
         answers:    answers,
         timestamp:  firebase.firestore.FieldValue.serverTimestamp()
     }).then(function() {
+
+        // Step 2 — Get current user profile
         return db.collection('users').doc(currentUser.uid).get();
+
     }).then(function(snap) {
-        const prev    = snap.exists ? snap.data() : {};
-        const newHigh = Math.max(prev.highestScore || 0, pct);
-        return db.collection('users').doc(currentUser.uid).update({
-            totalQuizzes: firebase.firestore.FieldValue.increment(1),
-            totalScore:   firebase.firestore.FieldValue.increment(pct),
-            highestScore: newHigh,
-            lastActive:   firebase.firestore.FieldValue.serverTimestamp()
-        });
+
+        const newHigh = Math.max(snap.exists ? (snap.data().highestScore || 0) : 0, pct);
+        const userRef = db.collection('users').doc(currentUser.uid);
+
+        if (snap.exists) {
+            // Step 3a — Profile exists — update stats
+            return userRef.update({
+                totalQuizzes: firebase.firestore.FieldValue.increment(1),
+                totalScore:   firebase.firestore.FieldValue.increment(pct),
+                highestScore: newHigh,
+                lastActive:   firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } else {
+            // Step 3b — Profile does NOT exist — create it first then save stats
+            // This handles users who signed up before the fix
+            return userRef.set({
+                uid:                   currentUser.uid,
+                displayName:           currentUser.displayName || 'Learner',
+                email:                 currentUser.email,
+                createdAt:             firebase.firestore.FieldValue.serverTimestamp(),
+                lastActive:            firebase.firestore.FieldValue.serverTimestamp(),
+                totalQuizzes:          1,
+                totalScore:            pct,
+                highestScore:          pct,
+                learningDaysCompleted: []
+            });
+        }
+
     }).then(function() {
         document.getElementById('save-note').textContent = '✓ Score saved to your dashboard!';
         showToast('Quiz result saved to Dashboard!');
