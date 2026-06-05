@@ -287,21 +287,18 @@ function loadDashboard(uid) {
         const totalQ   = profile.totalQuizzes  || 0;
         const highest  = profile.highestScore  || 0;
         const avgScore = totalQ > 0 ? Math.round((profile.totalScore || 0) / totalQ) : 0;
-        const daysArr  = profile.learningDaysCompleted || [];
-
-        // Remove duplicates and cap at 7
-        const uniqueDays = daysArr.filter(function(day, index, self) {
-            return self.indexOf(day) === index;
-        }).slice(0, 7);
+        // Learning days are session-only — always show 0 on fresh login
+        // Days get updated live when user marks them in index.html
+        const uniqueDays = [];
 
         // Fill stat cards
         document.getElementById('st-total').textContent = totalQ;
         document.getElementById('st-avg').textContent   = totalQ > 0 ? avgScore + '%' : '—';
         document.getElementById('st-high').textContent  = totalQ > 0 ? highest  + '%' : '—';
-        document.getElementById('st-days').textContent  = uniqueDays.length + ' / 7';
+        document.getElementById('st-days').textContent  = '0 / 7';
 
-        // Fill ring chart — cap at 100%
-        const pct = Math.min(100, Math.round((uniqueDays.length / 7) * 100));
+        // Fill ring chart — always starts at 0% on fresh login
+        const pct = 0;
         document.getElementById('ring-pct').textContent = pct + '%';
         setTimeout(function() {
             const offset = 314.16 - (314.16 * pct / 100);
@@ -377,7 +374,7 @@ function loadDashboard(uid) {
         });
 }
 
-// ── Sign out ─────────────────────────────────────────────
+// ── Sign out — simple clean signout ─────────────────────────
 function handleLogout() {
     auth.signOut().then(function() {
         window.location.href = 'auth.html';

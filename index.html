@@ -247,17 +247,21 @@ auth.onAuthStateChanged(function(user) {
     document.getElementById('auth-overlay').classList.add('hidden');
 });
 
-// ── Sign out ─────────────────────────────────────────────
+// ── Sign out — simple, no Firestore update needed ───────────
 function handleSignOut() {
+    sessionDays      = [];   // clear session memory
+    quizAlreadySaved = false;
     auth.signOut().then(function() {
         window.location.href = 'auth.html';
     });
 }
 
-// ── Reset ALL day buttons to fresh on every login ─────────
+// ── Reset ALL day buttons fresh on every login ─────────────
 function restoreDayProgress(uid) {
-    // Reset ALL 7 buttons to fresh incomplete state on every login
-    // This means every login shows all days as uncompleted
+    // Always reset session days to empty on every login
+    sessionDays = [];
+
+    // Reset ALL 7 buttons to fresh uncompleted state
     for (let i = 1; i <= 7; i++) {
         const btn = document.getElementById('btn-day' + i);
         if (btn) {
@@ -269,40 +273,31 @@ function restoreDayProgress(uid) {
 
     // Reset quiz save guard for fresh session
     quizAlreadySaved = false;
-
-    // NOTE — We do NOT load previous completed days from Firestore here
-    // This means every login shows all 7 days fresh and clickable
-    // User can mark days complete again each session
 }
 
-// ── Mark a day as complete and save to Firestore ─────────
+// ── Mark a day complete — session only, resets on every login ──
+// sessionDays tracks completed days in memory only
+// It resets automatically when user logs out or closes browser
+var sessionDays = [];
+
 function markDay(dayId, btnId) {
     const btn = document.getElementById(btnId);
     if (!btn || btn.classList.contains('done') || !currentUser) return;
 
-    // Check if already completed before saving — prevents duplicates
-    db.collection('users').doc(currentUser.uid).get().then(function(snap) {
-        const data         = snap.exists ? snap.data() : {};
-        const completed    = data.learningDaysCompleted || [];
+    // If already marked this session do nothing
+    if (sessionDays.indexOf(dayId) !== -1) {
+        showToast(dayId + ' already completed!');
+        return;
+    }
 
-        // If already in array do not add again
-        if (completed.indexOf(dayId) !== -1) {
-            setDoneState(btn);
-            showToast(dayId + ' already completed!');
-            return;
-        }
+    // Mark button as done
+    setDoneState(btn);
 
-        // Not in array yet — save it
-        setDoneState(btn);
-        return db.collection('users').doc(currentUser.uid).update({
-            learningDaysCompleted: firebase.firestore.FieldValue.arrayUnion(dayId),
-            lastActive:            firebase.firestore.FieldValue.serverTimestamp()
-        });
-    }).then(function() {
-        showToast('✓ ' + dayId + ' marked complete!');
-    }).catch(function(e) {
-        console.error('Error saving day:', e);
-    });
+    // Save to session memory only — NOT to Firestore
+    // This means it resets fresh on every login automatically
+    sessionDays.push(dayId);
+
+    showToast('✓ ' + dayId + ' marked complete!');
 }
 
 function setDoneState(btn) {
